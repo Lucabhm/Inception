@@ -4,8 +4,8 @@ LABEL author="backendböhm"
 
 WORKDIR /app
 
-RUN apk update && apk upgrade\
-	&& apk add mariadb mariadb-client
+RUN apk update && apk upgrade \
+	&& apk add mariadb mariadb-client curl
 
 COPY ./main.sh .
 

@@ -2,7 +2,7 @@ FROM alpine:3.22
 
 LABEL author="backendböhm"
 
-WORKDIR /var/www/html/
+WORKDIR /app
 
 RUN apk update && apk upgrade \
 	&& apk add nginx \
@@ -11,6 +11,8 @@ RUN apk update && apk upgrade \
 
 COPY conf/nginx.conf /etc/nginx/
 
-COPY conf/index.html /var/www/html/
+COPY ./nginx.sh /app
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+RUN chmod +x nginx.sh
+
+ENTRYPOINT ["./nginx.sh"]

@@ -7,19 +7,19 @@ networks:
 
 volumes:
     DB:
-        name: "mariaDb"
+        name: "mariadb"
         driver: local
         driver_opts:
           type: none
           o: bind
-          device: ${PWD}/data
+          device: /Users/lbohm/data # /home/lbohm/data
     WP:
-        name: 'wordPress'
+        name: 'wordpress'
         driver: local
         driver_opts:
           type: none
           o: bind
-          device: ${PWD}/data
+          device: /Users/lbohm/data # /home/lbohm/data
 
 services:
     nginx:
@@ -30,12 +30,12 @@ services:
         ports:
             - "443:443"
         volumes:
-            - "WP:/etc/nginx:ro"
-        depends_on:
-            mariaDb:
-                condition: service_healthy
-            wordPress:
-                condition: service_healthy
+            - "WP:/var/www/html:ro"
+        # depends_on:
+        #     mariadb:
+        #         condition: service_healthy
+        #     wordpress:
+        #         condition: service_healthy
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost"]
             interval: 30s
@@ -47,16 +47,16 @@ services:
             - "9000"
         restart: on-failure
 
-    wordPress:
-        container_name: wordPress
+    wordpress:
+        container_name: wordpress
         build:
             context: ./requirements/wordPress
             dockerfile: Dockerfile
-        depends_on:
-            mariaDb:
-                condition: service_healthy
+        # depends_on:
+        #     mariadb:
+        #         condition: service_healthy
         volumes:
-            - "WP:/etc/nginx:rw"
+            - "WP:/var/lib/mysql:rw"
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost"]
             interval: 30s
@@ -69,13 +69,13 @@ services:
             - "3306"
         restart: on-failure
 
-    mariaDb:
-        container_name: mariaDb
+    mariadb:
+        container_name: mariadb
         build:
             context: ./requirements/mariaDb
             dockerfile: Dockerfile
         volumes:
-            - "DB:/etc/nginx:rw"
+            - "DB:/var/lib/mysql:rw"
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost"]
             interval: 30s
