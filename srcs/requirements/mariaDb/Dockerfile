@@ -2,8 +2,6 @@ FROM debian:12
 
 LABEL author="backendböhm"
 
-WORKDIR /app
-
 RUN apt-get update && \
 	apt-get install -y \
 	mariadb-server \
@@ -13,8 +11,11 @@ RUN apt-get update && \
 	tzdata \
 	curl
 
-COPY ./main.sh .
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/.
+COPY ./init.sql /etc/mysql/init.sql
 
-RUN chmod +x main.sh
+COPY ./mariadb.sh .
 
-ENTRYPOINT ["./main.sh"]
+RUN chmod +x mariadb.sh
+
+ENTRYPOINT ["./mariadb.sh"]

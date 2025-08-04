@@ -2,9 +2,7 @@ FROM debian:12
 
 LABEL author="backendböhm"
 
-WORKDIR /app
-
-RUN apt-get update && apt-get upgrade \
+RUN apt-get update \
 	&& apt-get install -y \
 	php \
 	php-mysql \
@@ -21,10 +19,11 @@ RUN apt-get update && apt-get upgrade \
 	mariadb-client \
 	wget
 
-RUN ln -s /usr/bin/php82 /usr/bin/php && \
-    adduser -S -G www-data www-data || true && \
+RUN adduser -S -G www-data www-data || true && \
     mkdir -p /var/www/html && \
     chown -R www-data:www-data /var/www/html
+
+COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
 COPY ./wordpress.sh .
 

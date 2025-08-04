@@ -2,17 +2,15 @@ FROM debian:12
 
 LABEL author="backendböhm"
 
-WORKDIR /app
-
-RUN apt-get update && apt-get upgrade \
-	apt-get install -y \
+RUN apt-get update \
+	&& apt-get install -y \
 	nginx \
 	openssl \
 	curl
 
 COPY conf/nginx.conf /etc/nginx/
 
-COPY ./nginx.sh /app
+COPY ./nginx.sh .
 
 RUN chmod +x nginx.sh
 
