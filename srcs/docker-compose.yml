@@ -1,23 +1,23 @@
-# networks:
-#     insecption:
-#         name: "insecption"
-#         driver: bridge
+networks:
+    insecption:
+        name: "insecption"
+        driver: bridge
 
 volumes:
-#     DB:
-#         name: "mariadb"
-#         driver: local
-#         driver_opts:
-#           type: none
-#           o: bind
-#           device: /Users/lbohm/data/db # /home/lbohm/data
-  WP:
-      name: 'wordpress'
-      driver: local
-      driver_opts:
-        type: none
-        o: bind
-        device: /Users/lbohm/data/wp # /home/lbohm/data
+    DB:
+        name: "mariadb"
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /Users/lucabohm/data/db # /home/lbohm/data
+    WP:
+        name: 'wordpress'
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /Users/lucabohm/data/wp # /home/lbohm/data
 
 services:
     nginx:
@@ -32,15 +32,10 @@ services:
         depends_on:
             wordpress:
                 condition: service_healthy
-        healthcheck:
-            test: ["CMD", "curl", "-f", "https://localhost"]
-            interval: 30s
-            timeout: 5s
-            retries: 3
-        # networks:
-        #     - insecption
-        # expose:
-        #     - "9000"
+        networks:
+            - insecption
+        expose:
+            - "9000"
         restart: on-failure
 
     wordpress:
@@ -54,20 +49,23 @@ services:
         volumes:
             - "WP:/var/www/html"
         environment:
-            WORDPRESS_DB_HOST: mariadb:3306
+            WORDPRESS_DB_HOST: mariadb
             WORDPRESS_DB_NAME: wp_db
             WORDPRESS_DB_USER: wp_user
             WORDPRESS_DB_PASSWORD: wp_pass
+            WORDPRESS_TEST_USER: test
+            WORDPRESS_TEST_PASSWORD: starwars
+            WORDPRESS_TEST_USER_EMAIL: test@test.com
         healthcheck:
-            test: ["CMD-SHELL", "pgrep php-fpm82"]
+            test: ["CMD-SHELL", "pgrep php-fpm8.2"]
             interval: 30s
             timeout: 5s
             retries: 3
-        # networks:
-        #     - insecption
-        # expose:
-        #     - "9000"
-        #     - "3306"
+        networks:
+            - insecption
+        expose:
+            - "9000"
+            - "3306"
         restart: on-failure
 
     mariadb:
@@ -75,20 +73,21 @@ services:
         build:
             context: ./requirements/mariaDb
             dockerfile: Dockerfile
-    #     volumes:
-    #         - "DB:/var/lib/mysql:rw"
-    #     environment:
-    #         MYSQL_ROOT_PASSWORD: rootpass
-    #         MYSQL_DATABASE: wp_db
-    #         MYSQL_USER: wp_user
-    #         MYSQL_PASSWORD: wp_pass
+        volumes:
+            - "DB:/var/lib/mysql:rw"
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpass
+            MYSQL_DATABASE: wp_db
+            MYSQL_USER: wp_user
+            MYSQL_PASSWORD: wp_pass
         healthcheck:
-            test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -psecurepass"]
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
             interval: 30s
             timeout: 5s
-            retries: 5
-    #     networks:
-    #         - insecption
-    #     expose:
-    #         - "3306"
+            retries: 3
+            start_period: 15s
+        networks:
+            - insecption
+        expose:
+            - "3306"
         restart: on-failure

@@ -19,8 +19,7 @@ RUN apt-get update \
 	mariadb-client \
 	wget
 
-RUN adduser -S -G www-data www-data || true && \
-    mkdir -p /var/www/html && \
+RUN mkdir -p /var/www/html && \
     chown -R www-data:www-data /var/www/html
 
 COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
