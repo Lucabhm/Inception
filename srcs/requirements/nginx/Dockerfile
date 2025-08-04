@@ -1,13 +1,14 @@
-FROM alpine:3.22
+FROM debian:12
 
 LABEL author="backendböhm"
 
 WORKDIR /app
 
-RUN apk update && apk upgrade \
-	&& apk add nginx \
-	&& apk add openssl \
-	&& apk add curl
+RUN apt-get update && apt-get upgrade \
+	apt-get install -y \
+	nginx \
+	openssl \
+	curl
 
 COPY conf/nginx.conf /etc/nginx/
 

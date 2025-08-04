@@ -1,11 +1,17 @@
-FROM alpine:3.22
+FROM debian:12
 
 LABEL author="backendböhm"
 
 WORKDIR /app
 
-RUN apk update && apk upgrade \
-	&& apk add mariadb mariadb-client curl
+RUN apt-get update && \
+	apt-get install -y \
+	mariadb-server \
+	mariadb-client \
+	libmariadb3 \
+	libaio1 \
+	tzdata \
+	curl
 
 COPY ./main.sh .
 

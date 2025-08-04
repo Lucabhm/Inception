@@ -1,5 +1,8 @@
 #! /bin/sh
 
+set -e
+set -x
+
 mkdir -p /etc/nginx/certs/
 
 if [ ! -f /etc/nginx/certs/fullchain.pem ]; then

@@ -1,23 +1,25 @@
 #! /bin/sh
 
+set -e
+set -x
+
+cd /var/www/html
+
 wget https://wordpress.org/latest.tar.gz
-tar -xzvf latest.tar.gz
+tar -xzf latest.tar.gz --strip-components=1
 rm latest.tar.gz
-mv wordpress/* /var/www/html
-rm -rf wordpress
 
 wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
-
-cd /var/www/html
 
 if [ ! -f "wp-config.php" ]; then
 	wp config create \
 		--dbname=wp_db \
 		--dbuser=wp_user \
 		--dbpass=wp_pass \
-		--dbhost=mariadb
+		--dbhost=mariadb:3306 \
+		--allow-root
 
 	wp core install \
 		--url=https://localhost \
@@ -29,4 +31,4 @@ fi
 
 chown -R www-data:www-data /var/www/html
 
-php-fpm82 -F
+php-fpm8.2 -F
