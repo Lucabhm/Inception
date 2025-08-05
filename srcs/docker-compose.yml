@@ -126,3 +126,19 @@ services:
         - "21:21"
         - "10000-10100:10000-10100"
       restart: on-failure
+
+    adminer:
+      container_name: adminer
+      build:
+        context: ./requirements/bonus/adminer
+        dockerfile: Dockerfile
+      volumes:
+        - "WP:/var/www/html"
+      depends_on:
+        mariadb:
+          condition: service_healthy
+      ports:
+        - "8080:8080"
+      networks:
+        - insecption
+      restart: on-failure
