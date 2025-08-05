@@ -142,3 +142,20 @@ services:
       networks:
         - insecption
       restart: on-failure
+
+    cadvisor:
+      container_name: cadvisor
+      build:
+        context: ./requirements/bonus/cadvisor
+        dockerfile: Dockerfile
+      volumes:
+        - "/:/rootfs:ro"
+        - "/var/run:/var/run:ro"
+        - "/sys:/sys:ro"
+        - "/var/lib/docker/:/var/lib/docker:ro"
+        - "/dev/disk/:/dev/disk:ro"
+      ports:
+        - "4000:8080"
+      networks:
+        - insecption
+      restart: on-failure
