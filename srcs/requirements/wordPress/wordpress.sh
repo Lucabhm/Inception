@@ -3,11 +3,9 @@
 set -e
 set -x
 
-if [ ! -f "/var/www/html/wp-config.php" ]; then
+# if [ ! -f "/var/www/html/wp-config.php" ]; then
 
 	rm -rf /var/www/html/*
-
-	chown -R www-data:www-data /var/www/html/
 
 	wget https://wordpress.org/latest.tar.gz
 	tar -xzf latest.tar.gz
@@ -27,26 +25,47 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
 		--dbhost=$WORDPRESS_DB_HOST \
 		--allow-root
 
+	wp config set WP_REDIS_HOST 'redis' \
+		--allow-root
+
+	wp config set WP_REDIS_PORT 6379 \
+		--raw \
+		--allow-root
+
+	wp config set WP_CACHE true \
+		--raw \
+		--allow-root
+
 	wp core install \
 		--url="localhost" \
 		--title="inception" \
-		--admin_user=admin \
-		--admin_password=admin \
-		--admin_email=admin@admin.com \
+		--admin_user=$WORDPRESS_ADMIN_USER \
+		--admin_password=$WORDPRESS_ADMIN_PASSWORD \
+		--admin_email=$WORDPRESS_ADMIN_EMAIL \
 		--allow-root
 
-	wp theme install twentytwentyfour \
+	wp theme activate twentytwentyfour \
+		--allow-root
+
+	if ! wp user get "$WORDPRESS_TEST_USER" --path=/var/www/html/ --allow-root > /dev/null 2>&1; then
+		wp user create \
+			"$WORDPRESS_TEST_USER" \
+			"$WORDPRESS_TEST_USER_EMAIL" \
+			--user_pass="$WORDPRESS_TEST_USER_PASSWORD" \
+			--role=author \
+			--path=/var/www/html/ \
+			--allow-root
+	fi
+
+	wp plugin install redis-cache \
 		--activate \
-		--allow-root
-
-	wp user create \
-		$WORDPRESS_TEST_USER \
-		$WORDPRESS_TEST_USER_EMAIL \
-		--user_pass=$WORDPRESS_TEST_USER_PASSWORD \
-		--role=author \
 		--path=/var/www/html/ \
 		--allow-root
+	
+	wp redis enable --path=/var/www/html/ --allow-root
 
-fi
+	chown -R www-data:www-data /var/www/html/wp-content
+
+# fi
 
 php-fpm8.2 -F
