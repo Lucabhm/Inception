@@ -3,7 +3,7 @@
 set -e
 set -x
 
-# if [ ! -f "/var/www/html/wp-config.php" ]; then
+if [ ! -f "/var/www/html/wp-config.php" ]; then
 
 	rm -rf /var/www/html/*
 
@@ -47,15 +47,15 @@ set -x
 	wp theme activate twentytwentyfour \
 		--allow-root
 
-	if ! wp user get "$WORDPRESS_TEST_USER" --path=/var/www/html/ --allow-root > /dev/null 2>&1; then
-		wp user create \
-			"$WORDPRESS_TEST_USER" \
-			"$WORDPRESS_TEST_USER_EMAIL" \
-			--user_pass="$WORDPRESS_TEST_USER_PASSWORD" \
-			--role=author \
-			--path=/var/www/html/ \
-			--allow-root
-	fi
+	# if ! wp user get "$WORDPRESS_USER" --path=/var/www/html/ --allow-root > /dev/null 2>&1; then
+	wp user create \
+		$WORDPRESS_USER \
+		$WORDPRESS_USER_EMAIL \
+		--user_pass=$WORDPRESS_USER_PASSWORD \
+		--role=author \
+		--path=/var/www/html/ \
+		--allow-root
+	# fi
 
 	wp plugin install redis-cache \
 		--activate \
@@ -66,6 +66,6 @@ set -x
 
 	chown -R www-data:www-data /var/www/html/wp-content
 
-# fi
+fi
 
 php-fpm8.2 -F
