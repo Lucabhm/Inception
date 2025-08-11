@@ -63,4 +63,4 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
 
 fi
 
-php-fpm8.2 -F
+php-fpm7.4 -F
