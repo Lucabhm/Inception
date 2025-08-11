@@ -47,7 +47,6 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
 	wp theme activate twentytwentyfour \
 		--allow-root
 
-	# if ! wp user get "$WORDPRESS_USER" --path=/var/www/html/ --allow-root > /dev/null 2>&1; then
 	wp user create \
 		$WORDPRESS_USER \
 		$WORDPRESS_USER_EMAIL \
@@ -55,7 +54,6 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
 		--role=author \
 		--path=/var/www/html/ \
 		--allow-root
-	# fi
 
 	wp plugin install redis-cache \
 		--activate \
