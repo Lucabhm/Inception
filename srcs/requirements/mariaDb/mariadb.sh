@@ -10,9 +10,9 @@ fi
 mysqld_safe --bind-address=0.0.0.0 &
 sleep 10
 
-while ! mysqladmin ping --silent; do sleep 1; done
+while ! mysqladmin ping --silent; do sleep 2; done
 
-mariadb -u root -p"$MYSQL_ROOT_PASSWORD" <<-EOF
+mariadb -u root <<-EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY "${MYSQL_ROOT_PASSWORD}";
 
 CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
