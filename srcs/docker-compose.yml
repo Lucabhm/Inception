@@ -1,6 +1,6 @@
 networks:
-    insecption:
-        name: "insecption"
+    inception:
+        name: "inception"
         driver: bridge
 
 volumes:
@@ -10,14 +10,14 @@ volumes:
       driver_opts:
           type: none
           o: bind
-          device: /Users/lbohm/data/db # /home/lbohm/data
+          device: /Users/lbohm/data/database # /home/lbohm/data
     WP:
       name: 'wordpress'
       driver: local
       driver_opts:
           type: none
           o: bind
-          device: /Users/lbohm/data/wp # /home/lbohm/data
+          device: /Users/lbohm/data/wordpress # /home/lbohm/data
 
 services:
     nginx:
@@ -33,7 +33,7 @@ services:
           wordpress:
               condition: service_healthy
       networks:
-          - insecption
+          - inception
       expose:
           - "9000"
       restart: on-failure
@@ -67,7 +67,7 @@ services:
           timeout: 5s
           retries: 3
       networks:
-          - insecption
+          - inception
       expose:
           - "9000"
           - "3306"
@@ -91,7 +91,7 @@ services:
           timeout: 5s
           retries: 3
       networks:
-          - insecption
+          - inception
       expose:
           - "3306"
       restart: on-failure
@@ -107,7 +107,7 @@ services:
         timeout: 5s
         retries: 3
       networks:
-        - insecption
+        - inception
       expose:
         - "6379"
       restart: on-failure
@@ -140,7 +140,7 @@ services:
       ports:
         - "8080:8080"
       networks:
-        - insecption
+        - inception
       restart: on-failure
 
     cadvisor:
@@ -157,5 +157,14 @@ services:
       ports:
         - "4000:8080"
       networks:
-        - insecption
+        - inception
+      restart: on-failure
+
+    webside:
+      container_name: webside
+      build:
+        context: ./requirements/bonus/webside
+        dockerfile: Dockerfile
+      prots:
+        - "8000:8000"
       restart: on-failure

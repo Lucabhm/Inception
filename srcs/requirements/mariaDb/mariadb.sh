@@ -1,5 +1,8 @@
 #! /bin/sh
 
+set -e
+set -x
+
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
