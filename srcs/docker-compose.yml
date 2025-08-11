@@ -10,14 +10,14 @@ volumes:
       driver_opts:
           type: none
           o: bind
-          device: /home/lbohm/data/database # /home/lbohm/data
+          device: /home/lbohm/data
     WP:
       name: 'wordpress'
       driver: local
       driver_opts:
           type: none
           o: bind
-          device: /home/lbohm/data/wordpress # /home/lbohm/data
+          device: /home/lbohm/data
 
 services:
     nginx:
