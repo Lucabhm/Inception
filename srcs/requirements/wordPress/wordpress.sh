@@ -1,8 +1,5 @@
 #! /bin/sh
 
-set -e
-set -x
-
 if [ ! -f "/var/www/html/wp-config.php" ]; then
 
 	rm -rf /var/www/html/*

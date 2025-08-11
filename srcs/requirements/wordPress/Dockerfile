@@ -4,15 +4,15 @@ LABEL author="backendböhm"
 
 RUN apt-get update \
 	&& apt-get install -y \
-	php \
-	php-mysql \
-	php-fpm \
-	php-gd \
-	php-xml \
-	php-curl \
-	php-mbstring \
-	php-zip \
-	php-intl \
+	php7.4 \
+	php7.4-mysql \
+	php7.4-fpm \
+	php7.4-gd \
+	php7.4-xml \
+	php7.4-curl \
+	php7.4-mbstring \
+	php7.4-zip \
+	php7.4-intl \
 	unzip \
 	curl \
 	less \
@@ -22,7 +22,7 @@ RUN apt-get update \
 RUN mkdir -p /var/www/html && \
     chown -R www-data:www-data /var/www/html
 
-COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
+COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
 COPY ./wordpress.sh .
 
